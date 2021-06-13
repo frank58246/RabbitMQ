@@ -33,9 +33,9 @@ namespace RabbitMQ.BackgroundServices
 
             var queue = await bus.QueueDeclareAsync("simpleQueue", service => { });
             bus.Consume(queue, async (bytes, properties, info) =>
-            {
-                await houseService.HandleAsync(bytes);
-            });
+           {
+               await houseService.HandleAsync(bytes);
+           });
         }
     }
 }

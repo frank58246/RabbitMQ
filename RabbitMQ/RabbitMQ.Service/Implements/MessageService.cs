@@ -2,6 +2,8 @@
 using RabbitMQ.Common.Messaging.Factory;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,6 +39,12 @@ namespace RabbitMQ.Service
                     };
 
                     var body = new byte[] { };
+                    var bf = new BinaryFormatter();
+                    using (var ms = new MemoryStream())
+                    {
+                        bf.Serialize(ms, parameter.Data);
+                        body = ms.ToArray();
+                    }
 
                     await bus.PublishAsync(exchange, routeKey, mandatory, messageProperties, body);
 
