@@ -7,7 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using RabbitMQ.Messaging.Settings;
+using RabbitMQ.Common.Messaging.Factory;
+using RabbitMQ.Common.Messaging.Settings;
+using RabbitMQ.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +33,10 @@ namespace RabbitMQ
             var rabbitMQSetting = new RabbitMQSettings();
             Configuration.GetSection("RabbitMQSettings").Bind(rabbitMQSetting);
             services.AddSingleton(rabbitMQSetting);
+
+            services.AddTransient<IMessageService, MessageService>();
+
+            services.AddTransient<IBusFactory, BusFactory>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
