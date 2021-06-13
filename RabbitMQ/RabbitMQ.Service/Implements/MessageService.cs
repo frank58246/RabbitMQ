@@ -1,4 +1,5 @@
 ﻿using EasyNetQ;
+using RabbitMQ.Common.Helpers;
 using RabbitMQ.Common.Messaging.Factory;
 using System;
 using System.Collections.Generic;
@@ -38,13 +39,7 @@ namespace RabbitMQ.Service
                         DeliveryMode = 2 // persistent
                     };
 
-                    var body = new byte[] { };
-                    var bf = new BinaryFormatter();
-                    using (var ms = new MemoryStream())
-                    {
-                        bf.Serialize(ms, parameter.Data);
-                        body = ms.ToArray();
-                    }
+                    var body = FormatHelper.ToByteArray(parameter.Data);
 
                     await bus.PublishAsync(exchange, routeKey, mandatory, messageProperties, body);
 

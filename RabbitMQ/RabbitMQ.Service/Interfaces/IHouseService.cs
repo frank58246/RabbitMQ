@@ -7,6 +7,6 @@ namespace RabbitMQ.Service.Interfaces
 {
     public interface IHouseService
     {
-        Task HandleAsync(byte[] bytes);
+        void HandleMessage(string message);
     }
 }

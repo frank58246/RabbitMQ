@@ -1,6 +1,7 @@
 ﻿using EasyNetQ;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RabbitMQ.Common.Helpers;
 using RabbitMQ.Common.Messaging.Factory;
 using RabbitMQ.Service.Interfaces;
 using System;
@@ -29,13 +30,16 @@ namespace RabbitMQ.BackgroundServices
             var bus = this._busFactory.CrateBus();
 
             var serviceProvider = this._serviceScopeFactory.CreateScope().ServiceProvider;
-            var houseService = serviceProvider.GetService<IHouseService>();
 
             var queue = await bus.QueueDeclareAsync("simpleQueue", service => { });
-            bus.Consume(queue, async (bytes, properties, info) =>
-           {
-               await houseService.HandleAsync(bytes);
-           });
+            bus.Consume(queue, (bytes, properties, info) =>
+            {
+                var houseService = serviceProvider.GetService<IHouseService>();
+
+                var stringValue = FormatHelper.ToObject<string>(bytes);
+
+                houseService.HandleMessage(stringValue);
+            });
         }
     }
 }

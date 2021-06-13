@@ -12,15 +12,10 @@ namespace RabbitMQ.Service.Implements
 {
     public class HouseService : IHouseService
     {
-        public async Task HandleAsync(byte[] bytes)
+        public void HandleMessage(string message)
         {
-            var bf = new BinaryFormatter();
-            using (var ms = new MemoryStream(bytes))
-            {
-                object obj = bf.Deserialize(ms);
-                var message = (string)obj;
-                Console.WriteLine(message);
-            }
+            Console.WriteLine(message);
+            
         }
     }
 }
