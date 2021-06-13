@@ -16,6 +16,16 @@ namespace RabbitMQ.Service
             _busFactory = busFactory;
         }
 
+        public async Task RegisterConsumer(ConsumerParameter parameter)
+        {
+            var bus = parameter.AdvancedBus;
+            var queue = await bus.QueueDeclareAsync(parameter.QueueName, service => { });
+            bus.Consume(queue, registration =>
+            {
+                registration.Add<byte[]>(parameter.MessageHandler);
+            });
+        }
+
         public async Task<Result> SendMessage<T>(SendMessageParameter<T> parameter)
         {
             using (var bus = this._busFactory.CrateBus())
