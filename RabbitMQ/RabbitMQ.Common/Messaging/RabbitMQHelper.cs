@@ -19,9 +19,18 @@ namespace RabbitMQ.Common.Messaging
             this._busFactory = busFactory;
         }
 
-        public void ConsumeMessage<TConsumer, TResponseType>(ConsumeMessageParameter<TConsumer, TResponseType> parameter)
+        public void RegisterConsumer<TConsumer, TResponseType>(ConsumeMessageParameter<TConsumer, TResponseType> parameter)
         {
-            throw new NotImplementedException();
+            var bus = parameter.AdvancedBus;
+            var exchange = bus.ExchangeDeclare(parameter.ExchangeName, parameter.ExchangeType);
+            var queue = bus.QueueDeclare(parameter.QueueName);
+            bus.Bind(exchange, queue, parameter.RouteKey);
+
+            bus.Consume(queue, (bytes, properties, info) =>
+            {
+                var data = FormatHelper.ToObject<TResponseType>(bytes);
+                parameter.OnMessage.Invoke(data);
+            });
         }
 
         public async Task<Result> SendMessage<TDate>(SendMessageParameter<TDate> parameter)

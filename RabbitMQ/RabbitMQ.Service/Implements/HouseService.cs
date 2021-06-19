@@ -1,5 +1,6 @@
 ﻿using EasyNetQ.Consumer;
 using EasyNetQ.Topology;
+using Newtonsoft.Json;
 using RabbitMQ.Common.Messaging;
 using RabbitMQ.Common.Messaging.Model;
 using RabbitMQ.Service.Interfaces;
@@ -22,9 +23,9 @@ namespace RabbitMQ.Service.Implements
             _rabbitMQHelper = rabbitMQHelper;
         }
 
-        public void HandleMessage(string message)
+        public void HandleUpdateEvent(House house)
         {
-            Console.WriteLine(message);
+            Console.WriteLine(JsonConvert.SerializeObject(house));
         }
 
         public async Task<Result> SendUpdateEvent(House house)
@@ -32,8 +33,8 @@ namespace RabbitMQ.Service.Implements
             var sendParameter = new SendMessageParameter<House>
             {
                 Data = house,
-                ExchangeName = "house",
-                ExchangeType = ExchangeType.Direct
+                ExchangeName = "house.update.exchange",
+                ExchangeType = ExchangeType.Fanout
             };
 
             return await this._rabbitMQHelper.SendMessage(sendParameter);

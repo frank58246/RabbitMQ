@@ -11,7 +11,7 @@ namespace RabbitMQ.Common.Messaging
     {
         Task<Result> SendMessage<TData>(SendMessageParameter<TData> parameter);
 
-        void ConsumeMessage<TConsumer, TResponseType>
+        void RegisterConsumer<TConsumer, TResponseType>
                 (ConsumeMessageParameter<TConsumer, TResponseType> parameter);
     }
 }

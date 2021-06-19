@@ -21,7 +21,7 @@ namespace RabbitMQ.Common.Messaging
             this._busFactory = busFactory;
         }
 
-        public void ConsumeMessage<TConsumer, TResponseType>(ConsumeMessageParameter<TConsumer, TResponseType> parameter)
+        public void RegisterConsumer<TConsumer, TResponseType>(ConsumeMessageParameter<TConsumer, TResponseType> parameter)
         {
             throw new NotImplementedException();
         }
