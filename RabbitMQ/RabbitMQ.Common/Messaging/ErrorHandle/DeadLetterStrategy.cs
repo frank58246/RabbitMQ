@@ -9,6 +9,9 @@ namespace RabbitMQ.Common.Messaging.ErrorHandle
 {
     public class DeadLetterStrategy : DefaultConsumerErrorStrategy
     {
+        // 系統容忍最大重試次數
+        private const int MAX_RETRY_COUNT = 10;
+
         public DeadLetterStrategy(IPersistentConnection connection, ISerializer serializer, IConventions conventions, ITypeNameSerializer typeNameSerializer, IErrorMessageSerializer errorMessageSerializer, ConnectionConfiguration configuration) : base(connection, serializer, conventions, typeNameSerializer, errorMessageSerializer, configuration)
         {
         }
@@ -35,7 +38,7 @@ namespace RabbitMQ.Common.Messaging.ErrorHandle
                 retries += count;
             }
 
-            if (retries < 3)
+            if (retries < MAX_RETRY_COUNT)
             {
                 return AckStrategies.NackWithoutRequeue;
             }

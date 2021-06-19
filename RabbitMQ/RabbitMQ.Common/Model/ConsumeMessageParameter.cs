@@ -19,7 +19,7 @@ namespace RabbitMQ.Common.Model
 
         public Action<TResponse> OnMessage { get; set; }
 
-        public Action<TConsumer, TResponse> FallBack { get; set; }
+        public Action<TResponse> FallBack { get; set; }
 
         public int MaxRetryTime { get; set; }
     }

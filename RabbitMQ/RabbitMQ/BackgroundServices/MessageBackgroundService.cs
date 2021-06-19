@@ -50,7 +50,12 @@ namespace RabbitMQ.BackgroundServices
                 {
                     var houseService = serviceProvider.GetService<IHouseService>();
                     houseService.HandleUpdateEvent(data);
-                }
+                },
+                FallBack = data =>
+                {
+                    Console.WriteLine("Some thing fxxc up !!");
+                },
+                MaxRetryTime = 3
             };
 
             this._rabbitMQHelper.RegisterConsumer(consumeHouseEventParameter);
