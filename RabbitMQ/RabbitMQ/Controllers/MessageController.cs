@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RabbitMQ.Common.Enums;
+using RabbitMQ.Common.Messaging.Model;
 using RabbitMQ.Service;
+using RabbitMQ.Service.Interfaces;
+using RabbitMQ.Service.Model;
+
+using RabbitMQ.Service.Model;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,25 +17,18 @@ namespace RabbitMQ.Controllers
     [Route("[controller]")]
     public class MessageController : ControllerBase
     {
-        private readonly IMessageService messageService;
+        private readonly IHouseService _houseService;
 
-        public MessageController(IMessageService messageService)
+        public MessageController(IHouseService houseService)
         {
-            this.messageService = messageService;
+            _houseService = houseService;
         }
 
         [HttpPost]
-        public async Task<Result> SendSimpleStringAsync(string value)
+        [Route("house")]
+        public async Task<Result> SendHouseAsync(House house)
         {
-            var parameter = new SendMessageParameter<string>
-            {
-                Data = value,
-                ExchangeName = "message",
-                ExchangeType = ExchangeTypeEnum.direct,
-                RouteKey = "simpleQueue"
-            };
-
-            return await this.messageService.SendMessage(parameter);
+            return await this._houseService.SendUpdateEvent(house);
         }
     }
 }

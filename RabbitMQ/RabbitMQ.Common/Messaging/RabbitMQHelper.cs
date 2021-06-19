@@ -1,25 +1,30 @@
 ﻿using EasyNetQ;
 using RabbitMQ.Common.Helpers;
 using RabbitMQ.Common.Messaging.Factory;
+using RabbitMQ.Common.Messaging.Model;
+using RabbitMQ.Common.Model;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RabbitMQ.Service
+namespace RabbitMQ.Common.Messaging
 {
-    public class MessageService : IMessageService
+    public class RabbitMQHelper : IRabbitMQHelper
     {
         private readonly IBusFactory _busFactory;
 
-        public MessageService(IBusFactory busFactory)
+        public RabbitMQHelper(IBusFactory busFactory)
         {
-            _busFactory = busFactory;
+            this._busFactory = busFactory;
         }
 
-        public async Task<Result> SendMessage<T>(SendMessageParameter<T> parameter)
+        public void ConsumeMessage<TConsumer, TResponseType>(ConsumeMessageParameter<TConsumer, TResponseType> parameter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Result> SendMessage<TDate>(SendMessageParameter<TDate> parameter)
         {
             using (var bus = this._busFactory.CrateBus())
             {
@@ -30,9 +35,9 @@ namespace RabbitMQ.Service
                         _config.WithType(parameter.ExchangeType.ToString());
                     });
 
-                    var routeKey = parameter.RouteKey;
-
                     var mandatory = false;
+
+                    var routeKey = string.Empty; // routeKey 由consumer綁定
 
                     var messageProperties = new MessageProperties
                     {

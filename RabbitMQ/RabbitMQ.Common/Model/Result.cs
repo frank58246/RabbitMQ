@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RabbitMQ.Service
+namespace RabbitMQ.Common.Messaging.Model
 {
     public class Result
     {

@@ -1,9 +1,8 @@
-﻿using RabbitMQ.Common.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RabbitMQ.Service
+namespace RabbitMQ.Common.Messaging.Model
 {
     public class SendMessageParameter<T>
     {
@@ -11,8 +10,6 @@ namespace RabbitMQ.Service
 
         public string ExchangeName { get; set; }
 
-        public ExchangeTypeEnum ExchangeType { get; set; }
-
-        public string RouteKey { get; set; }
+        public string ExchangeType { get; set; }
     }
 }
