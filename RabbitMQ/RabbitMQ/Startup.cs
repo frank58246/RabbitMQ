@@ -38,7 +38,8 @@ namespace RabbitMQ
             Configuration.GetSection("RabbitMQSettings").Bind(rabbitMQSetting);
             services.AddSingleton(rabbitMQSetting);
 
-            services.AddTransient<IRabbitMQHelper, RabbitMQHelper>();
+            services.AddTransient<IRabbitMQHelper, RabbitMQHelper>()
+                    .Decorate<IRabbitMQHelper, AdvancedRabbitMQHelper>();
 
             services.AddHostedService<MessageBackgroundService>();
 

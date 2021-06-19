@@ -45,8 +45,16 @@ namespace RabbitMQ.Common.Messaging
 
             bus.Consume(queue, (bytes, properties, info) =>
             {
+                var retries = this.GetRetryTime(properties, exchange.Name);
                 var data = FormatHelper.ToObject<TResponseType>(bytes);
-                parameter.OnMessage.Invoke(data);
+                if (retries <= parameter.MaxRetryTime)
+                {
+                    parameter.OnMessage.Invoke(data);
+                }
+                else
+                {
+                    parameter.FallBack.Invoke(data);
+                }
             });
         }
 
@@ -69,13 +77,43 @@ namespace RabbitMQ.Common.Messaging
             var waitQueue = bus.QueueDeclare(waitQueueName, configure =>
             {
                 // 因為沒有consumer，30秒後自動進入deadLetter，即原來的exchange
-                configure.WithMessageTtl(TimeSpan.FromSeconds(30));
+                configure.WithMessageTtl(TimeSpan.FromSeconds(5));
                 configure.WithDeadLetterExchange(originExchange);
             });
 
             bus.Bind(waitExchange, waitQueue, string.Empty);
 
             return waitExchange;
+        }
+
+        private int GetRetryTime(MessageProperties properties, string originExchangeName)
+        {
+            object deathHeaderObject;
+            if (!properties.Headers.TryGetValue("x-death", out deathHeaderObject))
+            {
+                return 0;
+            }
+
+            var deathHeaders = deathHeaderObject as IList<object>;
+
+            if (deathHeaders == null)
+            {
+                return 0;
+            }
+
+            var retries = 0;
+            foreach (IDictionary<string, object> header in deathHeaders)
+            {
+                var count = int.Parse(header["count"].ToString());
+                var exchangeName = Encoding.UTF8.GetString(header["exchange"] as byte[]);
+
+                // 因為會經過waitExchange的deadLetter，死亡次數只算原本的exchange
+                if (exchangeName == originExchangeName)
+                {
+                    retries += count;
+                }
+            }
+            return retries;
         }
     }
 }

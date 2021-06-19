@@ -48,6 +48,7 @@ namespace RabbitMQ.BackgroundServices
                 AdvancedBus = bus,
                 OnMessage = data =>
                 {
+                    throw new Exception();
                     var houseService = serviceProvider.GetService<IHouseService>();
                     houseService.HandleUpdateEvent(data);
                 },

@@ -1,4 +1,6 @@
 ﻿using EasyNetQ;
+using EasyNetQ.Consumer;
+using RabbitMQ.Common.Messaging.ErrorHandle;
 using RabbitMQ.Common.Messaging.Settings;
 using System;
 using System.Collections.Generic;
@@ -37,7 +39,10 @@ namespace RabbitMQ.Common.Messaging.Factory
 
         public IAdvancedBus CrateBus()
         {
-            return RabbitHutch.CreateBus(this._config, service => { }).Advanced;
+            return RabbitHutch.CreateBus(this._config, service =>
+            {
+                service.Register<IConsumerErrorStrategy, DeadLetterStrategy>();
+            }).Advanced;
         }
     }
 }

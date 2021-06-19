@@ -1,6 +1,7 @@
 ﻿using EasyNetQ;
 using EasyNetQ.Consumer;
 using RabbitMQ.Client;
+using RabbitMQ.Common.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -35,9 +36,16 @@ namespace RabbitMQ.Common.Messaging.ErrorHandle
             foreach (IDictionary<string, object> header in deathHeaders)
             {
                 var count = int.Parse(header["count"].ToString());
-                retries += count;
-            }
+                var exchangeName = Encoding.UTF8.GetString(header["exchange"] as byte[]);
+                var originExchange = context.ReceivedInfo.Exchange;
 
+                // 因為會經過waitExchange的deadLetter，死亡次數只算原本的exchange
+                if (exchangeName == originExchange)
+                {
+                    retries += count;
+                }
+            }
+            Console.WriteLine($"retry time: {retries}");
             if (retries < MAX_RETRY_COUNT)
             {
                 return AckStrategies.NackWithoutRequeue;
