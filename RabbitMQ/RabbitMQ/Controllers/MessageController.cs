@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Common.Messaging.Model;
 using RabbitMQ.Service;
 using RabbitMQ.Service.Interfaces;
@@ -19,16 +20,28 @@ namespace RabbitMQ.Controllers
     {
         private readonly IHouseService _houseService;
 
-        public MessageController(IHouseService houseService)
+        private readonly ILogger<MessageController> _logger;
+
+        public MessageController(IHouseService houseService, ILogger<MessageController> logger)
         {
             _houseService = houseService;
+            _logger = logger;
         }
 
         [HttpPost]
         [Route("house")]
         public async Task<Result> SendHouseAsync(House house)
         {
-            return await this._houseService.SendUpdateEvent(house);
+            try
+            {
+                return await this._houseService.SendUpdateEvent(house);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.ToString());
+                return new Result();
+            }
+            
         }
     }
 }
