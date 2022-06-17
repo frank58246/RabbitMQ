@@ -1,15 +1,10 @@
-﻿using EasyNetQ.Consumer;
-using EasyNetQ.Topology;
+﻿using EasyNetQ.Topology;
 using Newtonsoft.Json;
 using RabbitMQ.Common.Messaging;
 using RabbitMQ.Common.Messaging.Model;
 using RabbitMQ.Service.Interfaces;
 using RabbitMQ.Service.Model;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace RabbitMQ.Service.Implements
