@@ -46,7 +46,7 @@ namespace RabbitMQ.Common.Messaging
 
                     var mandatory = false;
 
-                    var routeKey = string.Empty; // routeKey 由consumer綁定
+                    var routeKey = parameter.RoutingKey;
 
                     var messageProperties = new MessageProperties
                     {

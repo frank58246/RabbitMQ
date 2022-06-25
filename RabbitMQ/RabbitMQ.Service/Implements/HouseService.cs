@@ -18,9 +18,27 @@ namespace RabbitMQ.Service.Implements
             _rabbitMQHelper = rabbitMQHelper;
         }
 
+        public void HandleInsertEvent(House house)
+        {
+            Console.WriteLine(JsonConvert.SerializeObject(house) + "is inserted");
+        }
+
         public void HandleUpdateEvent(House house)
         {
-            Console.WriteLine(JsonConvert.SerializeObject(house));
+            Console.WriteLine(JsonConvert.SerializeObject(house) + "is updated");
+        }
+
+        public async Task<Result> SendInsertEvent(House house, string routingKey)
+        {
+            var sendParameter = new SendMessageParameter<House>
+            {
+                Data = house,
+                ExchangeName = "house.insert.exchange",
+                ExchangeType = ExchangeType.Direct,
+                RoutingKey = routingKey
+            };
+
+            return await this._rabbitMQHelper.SendMessage(sendParameter);
         }
 
         public async Task<Result> SendUpdateEvent(House house)

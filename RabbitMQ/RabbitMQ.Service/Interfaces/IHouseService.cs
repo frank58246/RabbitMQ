@@ -11,6 +11,10 @@ namespace RabbitMQ.Service.Interfaces
     {
         Task<Result> SendUpdateEvent(House house);
 
+        Task<Result> SendInsertEvent(House house, string routingKey);
+
         void HandleUpdateEvent(House house);
+
+        void HandleInsertEvent(House house);
     }
 }

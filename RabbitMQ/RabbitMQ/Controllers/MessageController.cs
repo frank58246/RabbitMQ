@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace RabbitMQ.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class MessageController : ControllerBase
     {
         private readonly IHouseService _houseService;
@@ -29,19 +29,15 @@ namespace RabbitMQ.Controllers
         }
 
         [HttpPost]
-        [Route("house")]
-        public async Task<Result> SendHouseAsync(House house)
+        public async Task<Result> SendUpdateHouseAsync(House house)
         {
-            try
-            {
-                return await this._houseService.SendUpdateEvent(house);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.ToString());
-                return new Result();
-            }
-            
+            return await this._houseService.SendUpdateEvent(house);
+        }
+
+        [HttpPost]
+        public async Task<Result> SendInsertHouseAsync(House house, string rountingKey)
+        {
+            return await this._houseService.SendInsertEvent(house, rountingKey);
         }
     }
 }
