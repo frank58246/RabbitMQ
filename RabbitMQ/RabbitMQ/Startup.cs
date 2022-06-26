@@ -1,3 +1,4 @@
+using CoreProfiler.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -66,7 +67,7 @@ namespace RabbitMQ
             app.UseRouting();
 
             app.UseAuthorization();
-
+            app.UseCoreProfiler();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

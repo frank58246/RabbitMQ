@@ -1,4 +1,5 @@
 ﻿using EasyNetQ;
+using RabbitMQ.Common.Filter;
 using RabbitMQ.Common.Helpers;
 using RabbitMQ.Common.Messaging.Factory;
 using RabbitMQ.Common.Messaging.Model;
@@ -33,43 +34,33 @@ namespace RabbitMQ.Common.Messaging
             });
         }
 
+        [Profile]
         public async Task<Result> SendMessage<TDate>(SendMessageParameter<TDate> parameter)
         {
             using (var bus = this._busFactory.CrateBus())
             {
-                try
+
+                var exchange = await bus.ExchangeDeclareAsync(parameter.ExchangeName, _config =>
                 {
-                    var exchange = await bus.ExchangeDeclareAsync(parameter.ExchangeName, _config =>
-                    {
-                        _config.WithType(parameter.ExchangeType.ToString());
-                    });
+                    _config.WithType(parameter.ExchangeType.ToString());
+                });
 
-                    var mandatory = false;
+                var mandatory = false;
 
-                    var routeKey = parameter.RoutingKey;
+                var routeKey = parameter.RoutingKey;
 
-                    var messageProperties = new MessageProperties
-                    {
-                        DeliveryMode = 2 // persistent
-                    };
-
-                    var body = FormatHelper.ToByteArray(parameter.Data);
-
-                    await bus.PublishAsync(exchange, routeKey, mandatory, messageProperties, body);
-
-                    return new Result { Success = true };
-                }
-                catch (Exception e)
+                var messageProperties = new MessageProperties
                 {
-                    var result = new Result
-                    {
-                        Success = false,
-                        ErrorMessage = e.Message,
-                        StackTrace = e.StackTrace
-                    };
+                    DeliveryMode = 2 // persistent
+                };
 
-                    return result;
-                }
+                var body = FormatHelper.ToByteArray(parameter.Data);
+
+                await bus.PublishAsync(exchange, routeKey, mandatory, messageProperties, body);
+
+                return new Result { Success = true };
+
+
             }
         }
     }

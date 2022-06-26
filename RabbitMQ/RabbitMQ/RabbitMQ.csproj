@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspectCore.Core" Version="2.2.0" />
+    <PackageReference Include="AspectCore.Extensions.DependencyInjection" Version="2.2.0" />
+    <PackageReference Include="CoreProfiler.Web" Version="1.1.4" />
     <PackageReference Include="EasyNetQ" Version="6.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.16" NoWarn="NU1605" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.1.16" NoWarn="NU1605" />

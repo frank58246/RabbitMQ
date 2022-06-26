@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspectCore.Extensions.DependencyInjection;
 
 namespace RabbitMQ
 {
@@ -21,6 +22,6 @@ namespace RabbitMQ
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                }).UseServiceProviderFactory(new DynamicProxyServiceProviderFactory());
     }
 }

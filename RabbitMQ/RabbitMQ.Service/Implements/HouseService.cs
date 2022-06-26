@@ -1,5 +1,6 @@
 ﻿using EasyNetQ.Topology;
 using Newtonsoft.Json;
+using RabbitMQ.Common.Filter;
 using RabbitMQ.Common.Messaging;
 using RabbitMQ.Common.Messaging.Model;
 using RabbitMQ.Service.Interfaces;
@@ -26,6 +27,10 @@ namespace RabbitMQ.Service.Implements
 
         public void HandleUpdateEvent(House house)
         {
+            var delay = Environment.GetEnvironmentVariable("DELAY_SECOND");
+            int.TryParse(delay, out var delaySecond);
+
+            Thread.Sleep(TimeSpan.FromSeconds(delaySecond));
             Console.WriteLine(JsonConvert.SerializeObject(house) + "is updated");
         }
 
@@ -42,6 +47,7 @@ namespace RabbitMQ.Service.Implements
             return await this._rabbitMQHelper.SendMessage(sendParameter);
         }
 
+        [Profile]
         public async Task<Result> SendUpdateEvent(House house)
         {
             var sendParameter = new SendMessageParameter<House>
@@ -50,11 +56,6 @@ namespace RabbitMQ.Service.Implements
                 ExchangeName = "house.update.exchange",
                 ExchangeType = ExchangeType.Fanout
             };
-
-            var delay = Environment.GetEnvironmentVariable("DELAY") == "y"
-                         ? 2
-                         : 0;
-            Thread.Sleep(delay);
 
             return await this._rabbitMQHelper.SendMessage(sendParameter);
         }

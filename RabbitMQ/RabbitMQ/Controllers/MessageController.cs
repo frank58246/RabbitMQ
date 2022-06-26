@@ -31,13 +31,21 @@ namespace RabbitMQ.Controllers
         [HttpPost]
         public async Task<Result> SendUpdateHouseAsync(House house)
         {
+            house.UpdateTime = DateTime.Now;
             return await this._houseService.SendUpdateEvent(house);
         }
 
         [HttpPost]
         public async Task<Result> SendInsertHouseAsync(House house, string rountingKey)
         {
+            house.UpdateTime = DateTime.Now;
             return await this._houseService.SendInsertEvent(house, rountingKey);
+        }
+
+        [HttpGet]
+        public string Echo(string value)
+        {
+            return value;
         }
     }
 }
