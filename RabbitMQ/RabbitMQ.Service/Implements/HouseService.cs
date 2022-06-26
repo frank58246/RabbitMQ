@@ -5,6 +5,7 @@ using RabbitMQ.Common.Messaging.Model;
 using RabbitMQ.Service.Interfaces;
 using RabbitMQ.Service.Model;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RabbitMQ.Service.Implements
@@ -49,6 +50,11 @@ namespace RabbitMQ.Service.Implements
                 ExchangeName = "house.update.exchange",
                 ExchangeType = ExchangeType.Fanout
             };
+
+            var delay = Environment.GetEnvironmentVariable("DELAY") == "y"
+                         ? 2
+                         : 0;
+            Thread.Sleep(delay);
 
             return await this._rabbitMQHelper.SendMessage(sendParameter);
         }
