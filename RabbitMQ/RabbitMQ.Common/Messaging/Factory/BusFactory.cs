@@ -41,7 +41,7 @@ namespace RabbitMQ.Common.Messaging.Factory
         {
             return RabbitHutch.CreateBus(this._config, service =>
             {
-                service.Register<IConsumerErrorStrategy, DeadLetterStrategy>();
+                //service.Register<IConsumerErrorStrategy, DeadLetterStrategy>();
             }).Advanced;
         }
     }

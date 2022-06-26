@@ -1,4 +1,4 @@
-$ver = "0627"
+$ver = "0627e"
 docker login
 docker build -t frank58246/rabbitmq-poc:$ver -f RabbitMQ/Dockerfile . 
 docker build -t frank58246/rabbitmq-consumer:$ver -f RabbitMQ.Consumer/Dockerfile .
